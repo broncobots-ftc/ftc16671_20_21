@@ -10,6 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd4916aa-6fe9-4c4d-b0d5-e57d79cb9eb2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ConceptTensorFlowObjectDetection.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ConceptTensorFlowObjectDetection.java" afterDir="false" />
     </list>
@@ -149,12 +150,34 @@
       <option name="project" value="LOCAL" />
       <updated>1602366762816</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added some more comments and corrected message">
+      <created>1602540793755</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1602540793757</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added some more comments and corrected message">
+      <created>1602540833063</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1602540833063</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added some more comments and corrected message">
+      <created>1602540876111</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1602540876111</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="commiting all changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="commiting all changes" />
+    <MESSAGE value="Added some more comments and corrected message" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added some more comments and corrected message" />
   </component>
   <component name="WindowStateProjectService">
     <state x="240" y="65" key="#Notifications" timestamp="1602366677045">
@@ -174,10 +197,10 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="344" y="265" width="591" height="278" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1280.800@0.0.1280.800" timestamp="1602124680693" />
-    <state x="260" y="23" width="760" height="722" key="CommitChangelistDialog2" timestamp="1602540832644">
+    <state x="260" y="23" width="760" height="722" key="CommitChangelistDialog2" timestamp="1602540875551">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="260" y="23" width="760" height="722" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1602540832644" />
+    <state x="260" y="23" width="760" height="722" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1602540875551" />
     <state x="483" y="300" key="Github.ShareDialog" timestamp="1602365778752">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
@@ -198,10 +221,10 @@
       <screen x="0" y="23" width="1280" height="724" />
     </state>
     <state width="1218" height="125" key="GridCell.Tab.0.right/0.23.1280.724@0.23.1280.724" timestamp="1602122462415" />
-    <state x="240" y="140" key="Vcs.Push.Dialog.v2" timestamp="1602540834537">
+    <state x="240" y="140" key="Vcs.Push.Dialog.v2" timestamp="1602540881062">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="240" y="140" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1602540834537" />
+    <state x="240" y="140" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1602540881062" />
     <state x="298" y="218" key="com.intellij.ide.util.TipDialog" timestamp="1602190746054">
       <screen x="0" y="23" width="1280" height="724" />
     </state>

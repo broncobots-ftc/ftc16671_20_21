@@ -151,14 +151,17 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                         if(totalRings == 0){
                             //Strafe right
                             //Move forward to A
+                            //Release wobble
                         }else if(totalRings == 1){
                             //Strafe right
                             //Move forward
                             //Strafe left to B
+                            //Release wobble
 
                         }else if(totalRings == 4){
                             //Strafe right
                             //Move forward to C
+                            //Release wobble
                         }
 
 
