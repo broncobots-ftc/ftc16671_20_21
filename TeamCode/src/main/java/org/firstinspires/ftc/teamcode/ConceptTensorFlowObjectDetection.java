@@ -182,13 +182,16 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      *
      */
     public void moveForward(){
-
+        //
     }
 
     /**
      *
      *
      */
+    public void strafeLeft(){
+        //
+    }
 
 
 
