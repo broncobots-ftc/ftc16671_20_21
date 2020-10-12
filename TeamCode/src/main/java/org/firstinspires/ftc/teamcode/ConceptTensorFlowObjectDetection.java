@@ -192,7 +192,9 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     /**
      *
-     * let's detect rings
+     * let's detect rings based on height of the object.
+     * @param totalHeight
+     * @return int - number of rings
      */
     public int detectRings(float totalHeight){
         int totalRings = 0;
@@ -203,10 +205,9 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
             telemetry.addLine("4 Rings Found (%d)");
             totalRings = 4;
         }else if(totalHeight > fourRingsMaxHeight){
-            telemetry.addLine(" Happy time (%d)");
+            telemetry.addLine("Ignore this.. (%d)");
         }else {
             telemetry.addLine("0 Rings Found (%d)");
-
         }
         return totalRings;
     }
