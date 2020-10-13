@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController.iml" group="FtcRobotController" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/FtcRobotController-FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/FtcRobotController-FtcRobotController.iml" group="FtcRobotController/FtcRobotController" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" group="FtcRobotController/TeamCode" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" group="ftc16671_20_21/TeamCode" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ftc16671_20_21.iml" filepath="$PROJECT_DIR$/.idea/modules/ftc16671_20_21.iml" group="ftc16671_20_21" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/ftc16671_20_21-FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/ftc16671_20_21-FtcRobotController.iml" group="ftc16671_20_21/FtcRobotController" />
     </modules>
   </component>
 </project>

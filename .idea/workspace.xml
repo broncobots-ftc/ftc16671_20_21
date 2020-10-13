@@ -9,17 +9,30 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bd4916aa-6fe9-4c4d-b0d5-e57d79cb9eb2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="bd4916aa-6fe9-4c4d-b0d5-e57d79cb9eb2" name="Default Changelist" comment="Added some more comments and corrected message">
+      <change afterPath="$PROJECT_DIR$/.idea/modules/FtcRobotController/ftc16671_20_21-FtcRobotController.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/ftc16671_20_21.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/FtcRobotController.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/FtcRobotController/FtcRobotController-FtcRobotController.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ConceptTensorFlowObjectDetection.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ConceptTensorFlowObjectDetection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="ZY223P33VH" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -46,6 +59,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
     <property name="memory.settings.postsync.last.time.stamp" value="1602076729692" />
   </component>
@@ -171,13 +185,21 @@
       <option name="project" value="LOCAL" />
       <updated>1602540876111</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added new function">
+      <created>1602546960622</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1602546960622</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="commiting all changes" />
     <MESSAGE value="Added some more comments and corrected message" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added some more comments and corrected message" />
+    <MESSAGE value="Added new function" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added new function" />
   </component>
   <component name="WindowStateProjectService">
     <state x="240" y="65" key="#Notifications" timestamp="1602366677045">
@@ -197,10 +219,11 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="344" y="265" width="591" height="278" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1280.800@0.0.1280.800" timestamp="1602124680693" />
-    <state x="260" y="23" width="760" height="722" key="CommitChangelistDialog2" timestamp="1602540875551">
-      <screen x="0" y="0" width="1280" height="800" />
+    <state x="277" y="0" width="760" height="722" key="CommitChangelistDialog2" timestamp="1602548119811">
+      <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="260" y="23" width="760" height="722" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1602540875551" />
+    <state x="277" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1602548119811" />
     <state x="483" y="300" key="Github.ShareDialog" timestamp="1602365778752">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
@@ -221,10 +244,11 @@
       <screen x="0" y="23" width="1280" height="724" />
     </state>
     <state width="1218" height="125" key="GridCell.Tab.0.right/0.23.1280.724@0.23.1280.724" timestamp="1602122462415" />
-    <state x="240" y="140" key="Vcs.Push.Dialog.v2" timestamp="1602540881062">
-      <screen x="0" y="0" width="1280" height="800" />
+    <state x="256" y="127" key="Vcs.Push.Dialog.v2" timestamp="1602546965123">
+      <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="240" y="140" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1602540881062" />
+    <state x="256" y="127" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1602546965123" />
     <state x="298" y="218" key="com.intellij.ide.util.TipDialog" timestamp="1602190746054">
       <screen x="0" y="23" width="1280" height="724" />
     </state>
