@@ -34,12 +34,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
+import java.util.Timer;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -53,10 +55,11 @@ import java.util.List;
  */
 @TeleOp(name = "TFRingDetection", group = "Concept")
 
-public class ConceptTensorFlowObjectDetection extends LinearOpMode {
+public class AutonomusMode extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
+    private MecanumDrive mecanumDrive = new MecanumDrive();
     int oneRingMinHeight = 180;
     int oneRingMaxHeight = 190;
 
@@ -93,13 +96,45 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      */
     private TFObjectDetector tfod;
 
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        //This is for mobile phone
+        parameters.cameraDirection = CameraDirection.BACK;
+        //This is for external camera - MAKE SURE DEVICE NAME IS CORRECT
+        //parameters.cameraName = hardwareMap.get(WebcamName.class, "webcam 1");
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.8f;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
         initTfod();
-
+        //mecanumDrive.init(hardwareMap);
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -121,52 +156,62 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+        long start = System.nanoTime();
+        long end = System.nanoTime();
+        int seconds = (int) (end - start / 1000000000);
         waitForStart();
+        int totalRings = 0;
 
         if (opModeIsActive()) {
+
             while (opModeIsActive()) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
+
+                    telemetry.addData("seconds ", seconds);
+                    telemetry.update();
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
+                    if (updatedRecognitions != null && seconds < 5) {
+                          telemetry.addData("# Object Detected", updatedRecognitions.size());
 
-                      // step through the list of recognitions and display boundary info.
-                      int i = 0;
-                      for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("Total rings height (%d)", i),"%.03f", recognition.getHeight());
+                          // step through the list of recognitions and display boundary info.
+                          int i = 0;
+                          for (Recognition recognition : updatedRecognitions) {
+                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                            telemetry.addData(String.format("Total rings height (%d)", i),"%.03f", recognition.getHeight());
 
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                          recognition.getLeft(), recognition.getTop());
+                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                              recognition.getLeft(), recognition.getTop());
 
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
-
-                        float totalHeight=recognition.getHeight();
-
-                        int totalRings = detectRings(totalHeight);
-
-                        if(totalRings == 0){
-                            //Strafe right
-                            //Move forward to A
-                            //Release wobble
-                        }else if(totalRings == 1){
-                            //Strafe right
-                            //Move forward
-                            //Strafe left to B
-                            //Release wobble
-
-                        }else if(totalRings == 4){
-                            //Strafe right
-                            //Move forward to C
-                            //Release wobble
-                        }
+                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                    recognition.getRight(), recognition.getBottom());
+                            float totalHeight=recognition.getHeight();
+                            totalRings = detectRings(totalHeight);
+                          }
+                          telemetry.update();
 
 
-                      }
-                      telemetry.update();
+                    }else{
+                        tfod.deactivate();
+                    }
+                    //
+                    end = System.nanoTime();
+                    seconds = (int) (end - start / 1000000000);
+                    //
+                    if(totalRings == 0){
+                        //Strafe right
+                        //Move forward to A
+                        //Release wobble
+                    }else if(totalRings == 1){
+                        //Strafe right
+                        //Move forward
+                        //Strafe left to B
+                        //Release wobble
+                    }else if(totalRings == 4){
+                        //Strafe right
+                        //Move forward to C
+                        //Release wobble
                     }
                 }
             }
@@ -179,30 +224,11 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     /**
      *
-     *
-     */
-    public void moveForward(){
-        //
-    }
-
-    /**
-     *
-     *
-     */
-    public void strafeLeft() {
-        //
-    }
-
-
-
-
-    /**
-     *
      * let's detect rings based on height of the object.
      * @param totalHeight
      * @return int - number of rings
      */
-    public int detectRings(float totalHeight){
+    private int detectRings(float totalHeight){
         int totalRings = 0;
         if(totalHeight > oneRingMinHeight && totalHeight > oneRingMaxHeight){
             telemetry.addLine("1 Ring Found (%d)");
@@ -218,34 +244,4 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         return totalRings;
     }
 
-
-    /**
-     * Initialize the Vuforia localization engine.
-     */
-    private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }
-
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-    }
 }

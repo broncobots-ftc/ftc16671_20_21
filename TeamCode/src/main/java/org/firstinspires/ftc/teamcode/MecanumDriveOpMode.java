@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Saurabh mechanum driving opmode", group = "ftc16671")
+@TeleOp(name = "Mechanum driving opmode", group = "ftc16671")
 public class MecanumDriveOpMode extends OpMode {
     private MecanumDrive mecanumDrive = new MecanumDrive();
     private double[] distances;

@@ -101,4 +101,29 @@ class MecanumDrive {
         backLeftOffset = backLeft.getCurrentPosition();
         backRightOffset = backRight.getCurrentPosition();
     }
+
+    public void moveForward(double forward){
+        driveMecanum(forward, 0.0, 0.0);
+    }
+
+    public void moveBackward(double backward){
+        driveMecanum(-backward, 0.0, 0.0);
+    }
+
+    public void strafeLeft(double left){
+        driveMecanum(0.0, left, 0.0);
+    }
+
+    public void strafeRight(double right){
+        driveMecanum(0.0, -right, 0.0);
+    }
+
+    public void rotateLeft(double left){
+        driveMecanum(0.0, 0.0, left);
+    }
+
+    public void rotateRight(double right){
+        driveMecanum(0.0, 0.0, -right);
+    }
+
 }
