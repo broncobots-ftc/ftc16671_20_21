@@ -29,6 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -40,8 +44,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Came
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Timer;
+
+
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -53,7 +61,7 @@ import java.util.Timer;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "TFRingDetection", group = "Concept")
+@Autonomous(name = "DetectRingsAndMove", group = "ftc16671")
 
 public class AutonomusMode extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -61,9 +69,9 @@ public class AutonomusMode extends LinearOpMode {
     private static final String LABEL_SECOND_ELEMENT = "Single";
     private MecanumDrive mecanumDrive = new MecanumDrive();
     int oneRingMinHeight = 180;
-    int oneRingMaxHeight = 190;
+    int oneRingMaxHeight = 240;
 
-    int fourRingsMinHeight = 280;
+    int fourRingsMinHeight = 240;
     int fourRingsMaxHeight = 350;
 
 
@@ -134,7 +142,8 @@ public class AutonomusMode extends LinearOpMode {
         // first.
         initVuforia();
         initTfod();
-        //mecanumDrive.init(hardwareMap);
+        mecanumDrive.init(hardwareMap);
+        mecanumDrive.setRunToPositionForAutonomus();
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -156,10 +165,10 @@ public class AutonomusMode extends LinearOpMode {
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
-        long start = System.nanoTime();
-        long end = System.nanoTime();
-        int seconds = (int) (end - start / 1000000000);
+
         waitForStart();
+        long start = System.currentTimeMillis();
+        long end = System.currentTimeMillis();
         int totalRings = 0;
 
         if (opModeIsActive()) {
@@ -169,12 +178,13 @@ public class AutonomusMode extends LinearOpMode {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
 
-                    telemetry.addData("seconds ", seconds);
-                    telemetry.update();
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null && seconds < 5) {
-                          telemetry.addData("# Object Detected", updatedRecognitions.size());
+                    end = System.currentTimeMillis();
+                    float seconds = (end - start) / 1000F;
+                    if (updatedRecognitions != null /*&& seconds < 65.0*/) {
 
+                          telemetry.addData("# Object Detected", updatedRecognitions.size());
+                          telemetry.addData("# seconds passed : ", seconds);
                           // step through the list of recognitions and display boundary info.
                           int i = 0;
                           for (Recognition recognition : updatedRecognitions) {
@@ -193,23 +203,25 @@ public class AutonomusMode extends LinearOpMode {
 
 
                     }else{
-                        tfod.deactivate();
+                        //tfod.deactivate();
                     }
                     //
-                    end = System.nanoTime();
-                    seconds = (int) (end - start / 1000000000);
+
                     //
                     if(totalRings == 0){
                         //Strafe right
                         //Move forward to A
+                        mecanumDrive.rotateLeft(0.5);
                         //Release wobble
                     }else if(totalRings == 1){
                         //Strafe right
                         //Move forward
+                        mecanumDrive.moveForward(0.5);
                         //Strafe left to B
                         //Release wobble
                     }else if(totalRings == 4){
                         //Strafe right
+                        mecanumDrive.strafeLeft(0.5);
                         //Move forward to C
                         //Release wobble
                     }
@@ -230,10 +242,10 @@ public class AutonomusMode extends LinearOpMode {
      */
     private int detectRings(float totalHeight){
         int totalRings = 0;
-        if(totalHeight > oneRingMinHeight && totalHeight > oneRingMaxHeight){
+        if(totalHeight > oneRingMinHeight && totalHeight <= oneRingMaxHeight){
             telemetry.addLine("1 Ring Found (%d)");
             totalRings = 1;
-        }else if(totalHeight > fourRingsMinHeight && totalHeight > fourRingsMaxHeight){
+        }else if(totalHeight > fourRingsMinHeight && totalHeight < fourRingsMaxHeight){
             telemetry.addLine("4 Rings Found (%d)");
             totalRings = 4;
         }else if(totalHeight > fourRingsMaxHeight){

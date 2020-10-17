@@ -51,6 +51,18 @@ class MecanumDrive {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
     }
 
+    void setRunToPositionForAutonomus() {
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
     private void setSpeeds(double flSpeed, double frSpeed, double blSpeed, double brSpeed) {
         double largest = maxSpeed;
         largest = Math.max(largest, Math.abs(flSpeed));
@@ -65,6 +77,8 @@ class MecanumDrive {
     }
 
     void driveMecanum(double forward, double strafe, double rotate) {
+        //watch following site to get more details on different options on how to move motors
+        //https://stemrobotics.cs.pdx.edu/node/4746
         double frontLeftSpeed = forward + strafe + rotate;
         double frontRightSpeed = forward - strafe - rotate;
         double backLeftSpeed = forward - strafe + rotate;
@@ -102,9 +116,20 @@ class MecanumDrive {
         backRightOffset = backRight.getCurrentPosition();
     }
 
-    public void moveForward(double forward){
+    public void moveForward(double forward, int distance){
+        setTargetPosition(distance);
         driveMecanum(forward, 0.0, 0.0);
+
     }
+
+    private void setTargetPosition(int distance) {
+        frontLeft.setTargetPosition(distance);
+        frontRight.setTargetPosition(distance);
+        backLeft.setTargetPosition(distance);
+        backRight.setTargetPosition(distance);
+    }
+
+    public void moveForward(double forward){ driveMecanum(forward, 0.0, 0.0); }
 
     public void moveBackward(double backward){
         driveMecanum(-backward, 0.0, 0.0);

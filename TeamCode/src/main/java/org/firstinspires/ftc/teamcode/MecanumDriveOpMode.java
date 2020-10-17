@@ -18,9 +18,9 @@ public class MecanumDriveOpMode extends OpMode {
     // Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
     @Override
     public void loop() {
-        double forward = gamepad1.left_stick_y * -1; //The y direction on the gamepad is reversed idk why
-        double strafe = gamepad1.left_stick_x;
-        double rotate = gamepad1.right_stick_x;
+        double forward = gamepad1.left_stick_y * 1; //The y direction on the gamepad is reversed idk why
+        double strafe = gamepad1.left_stick_x * -1;
+        double rotate = gamepad1.right_stick_x * -1;
 
         mecanumDrive.driveMecanum(forward, strafe, rotate);
         distances = mecanumDrive.getDistanceCm();
