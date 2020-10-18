@@ -72,7 +72,7 @@ public class AutonomusMode extends LinearOpMode {
     int oneRingMaxHeight = 240;
 
     int fourRingsMinHeight = 240;
-    int fourRingsMaxHeight = 350;
+    int fourRingsMaxHeight = 340;
 
 
 
