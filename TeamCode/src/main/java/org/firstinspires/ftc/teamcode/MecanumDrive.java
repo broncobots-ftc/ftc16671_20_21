@@ -7,18 +7,18 @@ import org.firstinspires.ftc.robotcore.external.matrices.GeneralMatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 
 class MecanumDrive {
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor backRight;
-    private DcMotor backLeft;
+    DcMotor frontLeft;
+    DcMotor frontRight;
+    DcMotor backRight;
+    DcMotor backLeft;
 
     public static double GEAR_RATIO = 1.0; // for simulator - ours should be 0.5f;
     public static double WHEEL_RADIUS = 5.0;  // 5 cm
     public static double TICKS_PER_ROTATION = 1120.0;  // From NeveRest (for simulator)  GoBilda should be 383.6f
-
     public static double CM_PER_TICK = (2 * Math.PI * GEAR_RATIO * WHEEL_RADIUS) / TICKS_PER_ROTATION;
 
     private double maxSpeed = 1.0;
+
 
     private MatrixF conversion;
     private GeneralMatrixF encoderMatrix = new GeneralMatrixF(3, 1);
@@ -51,11 +51,11 @@ class MecanumDrive {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    void setRunToPositionForAutonomus() {
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    void setAllRunToPosition() {
+//        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -63,7 +63,7 @@ class MecanumDrive {
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    private void setSpeeds(double flSpeed, double frSpeed, double blSpeed, double brSpeed) {
+    void setSpeeds(double flSpeed, double frSpeed, double blSpeed, double brSpeed) {
         double largest = maxSpeed;
         largest = Math.max(largest, Math.abs(flSpeed));
         largest = Math.max(largest, Math.abs(frSpeed));

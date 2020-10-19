@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -67,13 +69,23 @@ public class AutonomusMode extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
+
     private MecanumDrive mecanumDrive = new MecanumDrive();
+    private ElapsedTime runtime = new ElapsedTime();
     int oneRingMinHeight = 180;
     int oneRingMaxHeight = 240;
 
     int fourRingsMinHeight = 240;
     int fourRingsMaxHeight = 340;
 
+    /** This is for encoder **/
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
 
 
 
@@ -136,6 +148,76 @@ public class AutonomusMode extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
+    /*
+     *  Method to perform a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = mecanumDrive.frontLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newLeftTarget = mecanumDrive.backLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = mecanumDrive.frontRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newRightTarget = mecanumDrive.backRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            mecanumDrive.frontLeft.setTargetPosition(newLeftTarget);
+            mecanumDrive.backLeft.setTargetPosition(newLeftTarget);
+            mecanumDrive.frontRight.setTargetPosition(newRightTarget);
+            mecanumDrive.backRight.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            mecanumDrive.setAllRunToPosition();
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            mecanumDrive.setSpeeds(speed, speed, speed, speed);
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (mecanumDrive.frontLeft.isBusy() && mecanumDrive.frontRight.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
+                        mecanumDrive.frontLeft.getCurrentPosition(),
+                        mecanumDrive.frontRight.getCurrentPosition(),
+                        mecanumDrive.backLeft.getCurrentPosition(),
+                        mecanumDrive.backRight.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            mecanumDrive.frontLeft.setPower(0);
+            mecanumDrive.frontRight.setPower(0);
+            mecanumDrive.backLeft.setPower(0);
+            mecanumDrive.backRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            mecanumDrive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            mecanumDrive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            mecanumDrive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            mecanumDrive.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
@@ -143,7 +225,7 @@ public class AutonomusMode extends LinearOpMode {
         initVuforia();
         initTfod();
         mecanumDrive.init(hardwareMap);
-        mecanumDrive.setRunToPositionForAutonomus();
+        mecanumDrive.setAllRunToPosition();
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -210,18 +292,22 @@ public class AutonomusMode extends LinearOpMode {
                     //
                     if(totalRings == 0){
                         //Strafe right
+                        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
                         //Move forward to A
-                        mecanumDrive.rotateLeft(0.5);
+                        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
                         //Release wobble
                     }else if(totalRings == 1){
                         //Strafe right
-                        //Move forward
-                        mecanumDrive.moveForward(0.5);
+                        //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+                        //Move forward to A
+                        encoderDrive(DRIVE_SPEED,  60,  60, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
                         //Strafe left to B
                         //Release wobble
                     }else if(totalRings == 4){
                         //Strafe right
-                        mecanumDrive.strafeLeft(0.5);
+                        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+                        //Move forward to A
+                        encoderDrive(DRIVE_SPEED,  72,  72, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
                         //Move forward to C
                         //Release wobble
                     }
