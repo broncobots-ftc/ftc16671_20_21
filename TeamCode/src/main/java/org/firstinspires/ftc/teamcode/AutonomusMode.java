@@ -69,15 +69,6 @@ public class AutonomusMode extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
-
-    private MecanumDrive mecanumDrive = new MecanumDrive();
-    private ElapsedTime runtime = new ElapsedTime();
-    int oneRingMinHeight = 180;
-    int oneRingMaxHeight = 240;
-
-    int fourRingsMinHeight = 240;
-    int fourRingsMaxHeight = 340;
-
     /** This is for encoder **/
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
@@ -86,8 +77,15 @@ public class AutonomusMode extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
+    //
+    static final int oneRingMinHeight = 180;
+    static final int oneRingMaxHeight = 240;
 
+    static final int fourRingsMinHeight = 240;
+    static final int fourRingsMaxHeight = 340;
 
+    private MecanumDrive mecanumDrive = new MecanumDrive();
+    private ElapsedTime runtime = new ElapsedTime();
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -148,6 +146,29 @@ public class AutonomusMode extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
+    /**
+     *
+     * let's detect rings based on height of the object.
+     * @param totalHeight
+     * @return int - number of rings
+     */
+    private int detectRings(float totalHeight){
+        int totalRings = 0;
+        if(totalHeight > oneRingMinHeight && totalHeight <= oneRingMaxHeight){
+            telemetry.addLine("1 Ring Found (%d)");
+            totalRings = 1;
+        }else if(totalHeight > fourRingsMinHeight && totalHeight < fourRingsMaxHeight){
+            telemetry.addLine("4 Rings Found (%d)");
+            totalRings = 4;
+        }else if(totalHeight > fourRingsMaxHeight){
+            telemetry.addLine("Ignore this.. (%d)");
+        }else {
+            telemetry.addLine("0 Rings Found (%d)");
+        }
+        return totalRings;
+    }
+
+
     /*
      *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
@@ -167,9 +188,9 @@ public class AutonomusMode extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             newLeftTarget = mecanumDrive.frontLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newLeftTarget = mecanumDrive.backLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            //newLeftTarget = mecanumDrive.backLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
             newRightTarget = mecanumDrive.frontRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newRightTarget = mecanumDrive.backRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            //newRightTarget = mecanumDrive.backRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
             mecanumDrive.frontLeft.setTargetPosition(newLeftTarget);
             mecanumDrive.backLeft.setTargetPosition(newLeftTarget);
             mecanumDrive.frontRight.setTargetPosition(newRightTarget);
@@ -263,7 +284,7 @@ public class AutonomusMode extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     end = System.currentTimeMillis();
                     float seconds = (end - start) / 1000F;
-                    if (updatedRecognitions != null /*&& seconds < 65.0*/) {
+                    if (updatedRecognitions != null && seconds < 65.0) {
 
                           telemetry.addData("# Object Detected", updatedRecognitions.size());
                           telemetry.addData("# seconds passed : ", seconds);
@@ -285,7 +306,7 @@ public class AutonomusMode extends LinearOpMode {
 
 
                     }else{
-                        //tfod.deactivate();
+                        tfod.shutdown();
                     }
                     //
 
@@ -320,26 +341,5 @@ public class AutonomusMode extends LinearOpMode {
         }
     }
 
-    /**
-     *
-     * let's detect rings based on height of the object.
-     * @param totalHeight
-     * @return int - number of rings
-     */
-    private int detectRings(float totalHeight){
-        int totalRings = 0;
-        if(totalHeight > oneRingMinHeight && totalHeight <= oneRingMaxHeight){
-            telemetry.addLine("1 Ring Found (%d)");
-            totalRings = 1;
-        }else if(totalHeight > fourRingsMinHeight && totalHeight < fourRingsMaxHeight){
-            telemetry.addLine("4 Rings Found (%d)");
-            totalRings = 4;
-        }else if(totalHeight > fourRingsMaxHeight){
-            telemetry.addLine("Ignore this.. (%d)");
-        }else {
-            telemetry.addLine("0 Rings Found (%d)");
-        }
-        return totalRings;
-    }
 
 }
