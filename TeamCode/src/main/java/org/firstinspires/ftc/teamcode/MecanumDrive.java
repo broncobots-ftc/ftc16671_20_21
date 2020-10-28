@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.matrices.GeneralMatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 
@@ -28,6 +30,8 @@ class MecanumDrive {
     private int backRightOffset;
     private int backLeftOffset;
 
+    private ElapsedTime runtime = new ElapsedTime();
+
 
     MecanumDrive() {
         float[] data = {1.0f, 1.0f, 1.0f,
@@ -47,20 +51,22 @@ class MecanumDrive {
         backRight = hwMap.get(DcMotor.class, "back_right_motor");
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    void setAllRunToPosition() {
-//        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //
+    void setAllMotorsToRunToPosition() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    void setAllMotorsToRunUsingEncoder() {
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     void setSpeeds(double flSpeed, double frSpeed, double blSpeed, double brSpeed) {
@@ -116,17 +122,98 @@ class MecanumDrive {
         backRightOffset = backRight.getCurrentPosition();
     }
 
-    public void moveForward(double forward, int distance){
-        setTargetPosition(distance);
-        driveMecanum(forward, 0.0, 0.0);
-
-    }
-
-    private void setTargetPosition(int distance) {
+    private void setAllWheelsToTargetPosition(int distance) {
         frontLeft.setTargetPosition(distance);
         frontRight.setTargetPosition(distance);
         backLeft.setTargetPosition(distance);
         backRight.setTargetPosition(distance);
+    }
+
+    public void moveForward(int distanceInInches, boolean isOpModeActive, int timeoutS){
+        setAllWheelsToTargetPosition(distanceInInches);
+        setAllMotorsToRunToPosition();
+        runtime.reset();
+        driveMecanum(1.0,0.0,0.0);
+        while (runtime.seconds() < timeoutS &&
+                (frontLeft.isBusy() || frontRight.isBusy())) {
+            //wait or print something in telemetry
+        }
+        setSpeeds(0.0, 0.0,0.0, 0.0);
+        setAllMotorsToRunUsingEncoder();
+
+    }
+
+    public void moveBackward(int distanceInInches, boolean isOpModeActive, int timeoutS){
+        setAllWheelsToTargetPosition(-distanceInInches);
+        setAllMotorsToRunToPosition();
+        runtime.reset();
+        driveMecanum(1.0,0.0,0.0);
+        while (runtime.seconds() < timeoutS &&
+                (frontLeft.isBusy() || frontRight.isBusy())) {
+            //wait or print something in telemetry
+        }
+        setSpeeds(0.0, 0.0,0.0, 0.0);
+        setAllMotorsToRunUsingEncoder();
+    }
+
+    public void strafeLeft(int distanceInInches, boolean isOpModeActive, int timeoutS){
+        setAllWheelsToTargetPosition(distanceInInches);
+        setAllMotorsToRunToPosition();
+        runtime.reset();
+        driveMecanum(0.0,1.0,0.0);
+        while (runtime.seconds() < timeoutS &&
+                (frontLeft.isBusy() || frontRight.isBusy())) {
+            //wait or print something in telemetry
+        }
+        setSpeeds(0.0, 0.0,0.0, 0.0);
+        setAllMotorsToRunUsingEncoder();
+
+    }
+
+    public void strafeRight(int distanceInInches, boolean isOpModeActive, int timeoutS){
+        setAllWheelsToTargetPosition(distanceInInches);
+        setAllMotorsToRunToPosition();
+        runtime.reset();
+        driveMecanum(0.0,-1.0,0.0);
+        while (runtime.seconds() < timeoutS &&
+                (frontLeft.isBusy() || frontRight.isBusy())) {
+            //wait or print something in telemetry
+        }
+        setSpeeds(0.0, 0.0,0.0, 0.0);
+        setAllMotorsToRunUsingEncoder();
+
+    }
+
+    public void rotateLeft(int distanceInInches, boolean isOpModeActive, int timeoutS){
+        setAllWheelsToTargetPosition(distanceInInches);
+        setAllMotorsToRunToPosition();
+        runtime.reset();
+        driveMecanum(0.0,0.0,1.0);
+        while (runtime.seconds() < timeoutS &&
+                (frontLeft.isBusy() || frontRight.isBusy())) {
+            //wait or print something in telemetry
+        }
+        setSpeeds(0.0, 0.0,0.0, 0.0);
+        setAllMotorsToRunUsingEncoder();
+
+    }
+
+    public void rotateRight(int distanceInInches, boolean isOpModeActive, int timeoutS){
+        setAllWheelsToTargetPosition(distanceInInches);
+        setAllMotorsToRunToPosition();
+        runtime.reset();
+        driveMecanum(1.0,0.0,-1.0);
+        while (runtime.seconds() < timeoutS &&
+                (frontLeft.isBusy() || frontRight.isBusy())) {
+            //wait or print something in telemetry
+        }
+        setSpeeds(0.0, 0.0,0.0, 0.0);
+        setAllMotorsToRunUsingEncoder();
+
+    }
+
+    public void releaseWabble(){
+
     }
 
     public void moveForward(double forward){ driveMecanum(forward, 0.0, 0.0); }

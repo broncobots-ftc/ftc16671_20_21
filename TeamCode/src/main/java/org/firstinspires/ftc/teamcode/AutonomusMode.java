@@ -63,7 +63,7 @@ import java.util.Timer;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "DetectRingsAndMove", group = "ftc16671")
+@Autonomous(name = "Autonomus Mode", group = "ftc16671")
 
 public class AutonomusMode extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -84,6 +84,8 @@ public class AutonomusMode extends LinearOpMode {
     static final int fourRingsMinHeight = 240;
     static final int fourRingsMaxHeight = 340;
 
+    static final int SECONDS_TO_RUN_RING_DETECTION_FOR = 10;
+
     private MecanumDrive mecanumDrive = new MecanumDrive();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -93,11 +95,6 @@ public class AutonomusMode extends LinearOpMode {
      * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
      * web site at https://developer.vuforia.com/license-manager.
      *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
             "AWrb413/////AAABmQT6xsY2eEeEuRH7ulHkqXaAxt2nbyCB1ZDQfx1F+X80Nz5JjPzStB+GpmAByIBVfrjDCkRdsHsurFZvZruc+Rr8KeaKixYFNtpkbmk9DxNPtR3Tq67CVKTZYC46SR+zghr8zn5nP9NLOHWcVYFcNuTR8rx7R9QzAPlKYX60OHC6OLc5ngylJH/zvESjkSMq/84O68lIfkKVycJ7a8085IQBGfVh/yYEJQg3txuehOK97yTSltcJ8CYiM0qZBVRtGIbS2N6D8IZc8BpyjqTaZ8YZhE2gjCYVtlBKk6pveRidtkb0UA1uVmaVR0B9FeSlzwx8h38nbnIJlJF/WOuXNSApPALRl5wn8FZuY01VnV0s";
@@ -107,13 +104,11 @@ public class AutonomusMode extends LinearOpMode {
      * localization engine.
      */
     private VuforiaLocalizer vuforia;
-
     /**
      * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
      * Detection engine.
      */
     private TFObjectDetector tfod;
-
 
     /**
      * Initialize the Vuforia localization engine.
@@ -129,9 +124,7 @@ public class AutonomusMode extends LinearOpMode {
         parameters.cameraDirection = CameraDirection.BACK;
         //This is for external camera - MAKE SURE DEVICE NAME IS CORRECT
         //parameters.cameraName = hardwareMap.get(WebcamName.class, "webcam 1");
-        //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
     /**
@@ -197,7 +190,7 @@ public class AutonomusMode extends LinearOpMode {
             mecanumDrive.backRight.setTargetPosition(newRightTarget);
 
             // Turn On RUN_TO_POSITION
-            mecanumDrive.setAllRunToPosition();
+            mecanumDrive.setAllMotorsToRunToPosition();
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -213,14 +206,6 @@ public class AutonomusMode extends LinearOpMode {
                     (runtime.seconds() < timeoutS) &&
                     (mecanumDrive.frontLeft.isBusy() && mecanumDrive.frontRight.isBusy())) {
 
-                // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        mecanumDrive.frontLeft.getCurrentPosition(),
-                        mecanumDrive.frontRight.getCurrentPosition(),
-                        mecanumDrive.backLeft.getCurrentPosition(),
-                        mecanumDrive.backRight.getCurrentPosition());
-                telemetry.update();
             }
 
             // Stop all motion;
@@ -246,34 +231,25 @@ public class AutonomusMode extends LinearOpMode {
         initVuforia();
         initTfod();
         mecanumDrive.init(hardwareMap);
-        mecanumDrive.setAllRunToPosition();
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
          **/
         if (tfod != null) {
             tfod.activate();
-
-            // The TensorFlow software will scale the input images from the camera to a lower resolution.
-            // This can result in lower detection accuracy at longer distances (> 55cm or 22").
-            // If your target is at distance greater than 50 cm (20") you can adjust the magnification value
-            // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
+            // For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 1.78 or 16/9).
-
             // Uncomment the following line if you want to adjust the magnification and/or the aspect ratio of the input images.
-            tfod.setZoom(2.5, 1.78);
+            //tfod.setZoom(2.5, 1.78);
         }
-
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
-
         waitForStart();
         long start = System.currentTimeMillis();
         long end = System.currentTimeMillis();
         int totalRings = 0;
-
         if (opModeIsActive()) {
 
             while (opModeIsActive()) {
@@ -284,7 +260,7 @@ public class AutonomusMode extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     end = System.currentTimeMillis();
                     float seconds = (end - start) / 1000F;
-                    if (updatedRecognitions != null && seconds < 65.0) {
+                    if (updatedRecognitions != null && seconds <= SECONDS_TO_RUN_RING_DETECTION_FOR) {
 
                           telemetry.addData("# Object Detected", updatedRecognitions.size());
                           telemetry.addData("# seconds passed : ", seconds);
@@ -293,12 +269,6 @@ public class AutonomusMode extends LinearOpMode {
                           for (Recognition recognition : updatedRecognitions) {
                             telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                             telemetry.addData(String.format("Total rings height (%d)", i),"%.03f", recognition.getHeight());
-
-                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                              recognition.getLeft(), recognition.getTop());
-
-                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                    recognition.getRight(), recognition.getBottom());
                             float totalHeight=recognition.getHeight();
                             totalRings = detectRings(totalHeight);
                           }
@@ -309,29 +279,8 @@ public class AutonomusMode extends LinearOpMode {
                         tfod.shutdown();
                     }
                     //
-
-                    //
-                    if(totalRings == 0){
-                        //Strafe right
-                        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-                        //Move forward to A
-                        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-                        //Release wobble
-                    }else if(totalRings == 1){
-                        //Strafe right
-                        //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-                        //Move forward to A
-                        encoderDrive(DRIVE_SPEED,  60,  60, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-                        //Strafe left to B
-                        //Release wobble
-                    }else if(totalRings == 4){
-                        //Strafe right
-                        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-                        //Move forward to A
-                        encoderDrive(DRIVE_SPEED,  72,  72, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-                        //Move forward to C
-                        //Release wobble
-                    }
+                    moveBasedOnTotalRings(totalRings);
+                    break;
                 }
             }
         }
@@ -339,6 +288,33 @@ public class AutonomusMode extends LinearOpMode {
         if (tfod != null) {
             tfod.shutdown();
         }
+    }
+
+    private void moveBasedOnTotalRings(int totalRings) {
+        //if(totalRings == 0){
+            //Strafe right
+            mecanumDrive.strafeRight(12, true, 5);
+            //Move forward to A
+            mecanumDrive.moveForward(12, true, 5);
+            //Release wobble
+            mecanumDrive.releaseWabble();
+        /*}else if(totalRings == 1){
+            //Strafe right
+            mecanumDrive.strafeRight(10, true, 5);
+            //Move forward to A
+            mecanumDrive.moveForward(18, true, 5);
+            //Strafe left to B
+            mecanumDrive.strafeLeft(10, true, 5);
+            //Release wobble
+            mecanumDrive.releaseWabble();
+        }else if(totalRings == 4){
+            //Strafe right
+            mecanumDrive.strafeRight(12, true, 5);
+            //Move forward to A
+            mecanumDrive.moveForward(24, true, 5);
+            //Release wobble
+            mecanumDrive.releaseWabble();
+        }*/
     }
 
 
