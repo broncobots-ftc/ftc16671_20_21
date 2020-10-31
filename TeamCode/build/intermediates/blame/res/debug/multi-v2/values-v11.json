@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/freight-verify/StudioProjects/FtcRobotController/TeamCode/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v11/values-v11.xml",
+            "outputFile": "C:\\FTC\\ftc16671_20_21\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
-                    "source": "/Users/freight-verify/.gradle/caches/transforms-2/files-2.1/ceca41650d3db581663fd5742740d233/jetified-RobotCore-6.0.1/res/values-v11/values-v11.xml",
+                    "source": "C:\\Users\\Opal\\.gradle\\caches\\transforms-2\\files-2.1\\ceca41650d3db581663fd5742740d233\\jetified-RobotCore-6.0.1\\res\\values-v11\\values-v11.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
