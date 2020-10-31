@@ -15,6 +15,9 @@ class MecanumDrive {
     DcMotor backRight;
     DcMotor backLeft;
 
+    DcMotor shooterFront;
+    DcMotor shooterBack;
+
     Servo grabber;
 
     public static double GEAR_RATIO = 1.0; // for simulator - ours should be 0.5f;
@@ -54,11 +57,18 @@ class MecanumDrive {
         backRight = hwMap.get(DcMotor.class, "back_right_motor");
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        grabber = hwMap.get(Servo.class, "left_hand");
+        //grabber = hwMap.get(Servo.class, "left_hand");
         backRight.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
     }
 
+    void initServo(HardwareMap hwMap){
+        grabber = hwMap.get(Servo.class, "left_hand");
+    }
+    void initShooterMotors(HardwareMap hwMap){
+        shooterFront = hwMap.get(DcMotor.class, "shooter_front");
+        shooterBack = hwMap.get(DcMotor.class, "shooter_back");
+    }
 
 
     void setAllMotorsToRunToPosition() {
@@ -242,30 +252,30 @@ class MecanumDrive {
     }
 
     public void moveBasedOnTotalRings(int totalRings) {
-        //if(totalRings == 0){
-        //Strafe right
-        strafeRight(12, true, 5);
-        //Move forward to A
-        moveForward(12, true, 5);
-        //Release wobble
-        releaseWobble();
-        /*}else if(totalRings == 1){
+        if(totalRings == 0){
             //Strafe right
-            mecanumDrive.strafeRight(10, true, 5);
+            strafeRight(12, true, 5);
             //Move forward to A
-            mecanumDrive.moveForward(18, true, 5);
-            //Strafe left to B
-            mecanumDrive.strafeLeft(10, true, 5);
+            moveForward(12, true, 5);
             //Release wobble
-            mecanumDrive.releaseWabble();
+            releaseWobble();
+        }else if(totalRings == 1){
+            //Strafe right
+            strafeRight(10, true, 5);
+            //Move forward to A
+            moveForward(18, true, 5);
+            //Strafe left to B
+            strafeLeft(10, true, 5);
+            //Release wobble
+            releaseWobble();
         }else if(totalRings == 4){
             //Strafe right
-            mecanumDrive.strafeRight(12, true, 5);
+            strafeRight(12, true, 5);
             //Move forward to A
-            mecanumDrive.moveForward(24, true, 5);
+            moveForward(24, true, 5);
             //Release wobble
-            mecanumDrive.releaseWabble();
-        }*/
+            releaseWobble();
+        }
     }
 
     public void grabWobble(){

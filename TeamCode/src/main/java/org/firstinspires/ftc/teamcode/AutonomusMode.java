@@ -169,6 +169,8 @@ public class AutonomusMode extends LinearOpMode {
         initVuforia();
         initTfod();
         mecanumDrive.init(hardwareMap);
+        mecanumDrive.initServo(hardwareMap);
+        mecanumDrive.initShooterMotors(hardwareMap);
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
@@ -216,7 +218,16 @@ public class AutonomusMode extends LinearOpMode {
                     }else{
                         tfod.shutdown();
                     }
-                    //
+
+                    /**
+                     * detect rings
+                     * first shoot three
+                     * strafe
+                     * move to zone according to detection
+                     * release wobble
+                     * move back and strafe to parking line
+
+                    **/
                     mecanumDrive.moveBasedOnTotalRings(totalRings);
                     break;
                 }

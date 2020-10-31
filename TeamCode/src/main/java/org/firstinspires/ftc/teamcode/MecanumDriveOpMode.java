@@ -13,6 +13,7 @@ public class MecanumDriveOpMode extends OpMode {
     @Override
     public void init() {
         mecanumDrive.init(hardwareMap);
+        mecanumDrive.initServo(hardwareMap);
     }
 
     // Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
