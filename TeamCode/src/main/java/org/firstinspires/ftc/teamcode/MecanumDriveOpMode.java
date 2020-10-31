@@ -22,6 +22,14 @@ public class MecanumDriveOpMode extends OpMode {
         double forward = gamepad1.left_stick_y * 1; //The y direction on the gamepad is reversed idk why
         double strafe = gamepad1.left_stick_x * -1;
         double rotate = gamepad1.right_stick_x * -1;
+        boolean gamepadB = gamepad1.b;
+        if(gamepadB){
+            mecanumDrive.grabWobble();
+        }
+        boolean gamepadX = gamepad1.x;
+        if(gamepadX){
+            mecanumDrive.releaseWabble();
+        }
         //supply gamepad values to run motors, servo and other parts of robots
         mecanumDrive.driveMecanum(forward, strafe, rotate);
         distances = mecanumDrive.getDistanceCm();

@@ -162,68 +162,6 @@ public class AutonomusMode extends LinearOpMode {
     }
 
 
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newLeftTarget = mecanumDrive.frontLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            //newLeftTarget = mecanumDrive.backLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = mecanumDrive.frontRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            //newRightTarget = mecanumDrive.backRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            mecanumDrive.frontLeft.setTargetPosition(newLeftTarget);
-            mecanumDrive.backLeft.setTargetPosition(newLeftTarget);
-            mecanumDrive.frontRight.setTargetPosition(newRightTarget);
-            mecanumDrive.backRight.setTargetPosition(newRightTarget);
-
-            // Turn On RUN_TO_POSITION
-            mecanumDrive.setAllMotorsToRunToPosition();
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            mecanumDrive.setSpeeds(speed, speed, speed, speed);
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (mecanumDrive.frontLeft.isBusy() && mecanumDrive.frontRight.isBusy())) {
-
-            }
-
-            // Stop all motion;
-            mecanumDrive.frontLeft.setPower(0);
-            mecanumDrive.frontRight.setPower(0);
-            mecanumDrive.backLeft.setPower(0);
-            mecanumDrive.backRight.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            mecanumDrive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            mecanumDrive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            mecanumDrive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            mecanumDrive.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            //  sleep(250);   // optional pause after each move
-        }
-    }
-
     @Override
     public void runOpMode() throws InterruptedException {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
@@ -279,7 +217,7 @@ public class AutonomusMode extends LinearOpMode {
                         tfod.shutdown();
                     }
                     //
-                    moveBasedOnTotalRings(totalRings);
+                    mecanumDrive.moveBasedOnTotalRings(totalRings);
                     break;
                 }
             }
@@ -290,32 +228,7 @@ public class AutonomusMode extends LinearOpMode {
         }
     }
 
-    private void moveBasedOnTotalRings(int totalRings) {
-        //if(totalRings == 0){
-            //Strafe right
-            mecanumDrive.strafeRight(12, true, 5);
-            //Move forward to A
-            mecanumDrive.moveForward(12, true, 5);
-            //Release wobble
-            mecanumDrive.releaseWabble();
-        /*}else if(totalRings == 1){
-            //Strafe right
-            mecanumDrive.strafeRight(10, true, 5);
-            //Move forward to A
-            mecanumDrive.moveForward(18, true, 5);
-            //Strafe left to B
-            mecanumDrive.strafeLeft(10, true, 5);
-            //Release wobble
-            mecanumDrive.releaseWabble();
-        }else if(totalRings == 4){
-            //Strafe right
-            mecanumDrive.strafeRight(12, true, 5);
-            //Move forward to A
-            mecanumDrive.moveForward(24, true, 5);
-            //Release wobble
-            mecanumDrive.releaseWabble();
-        }*/
-    }
+
 
 
 }

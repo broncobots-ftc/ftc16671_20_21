@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.GeneralMatrixF;
@@ -13,6 +14,8 @@ class MecanumDrive {
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor backLeft;
+
+    Servo grabber;
 
     public static double GEAR_RATIO = 1.0; // for simulator - ours should be 0.5f;
     public static double WHEEL_RADIUS = 5.0;  // 5 cm
@@ -51,9 +54,12 @@ class MecanumDrive {
         backRight = hwMap.get(DcMotor.class, "back_right_motor");
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        grabber = hwMap.get(Servo.class, "left_hand");
         backRight.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
     }
+
+
 
     void setAllMotorsToRunToPosition() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -236,6 +242,41 @@ class MecanumDrive {
 
     public void rotateRight(double right){
         driveMecanum(0.0, 0.0, -right);
+    }
+
+    public void moveBasedOnTotalRings(int totalRings) {
+        //if(totalRings == 0){
+        //Strafe right
+        strafeRight(12, true, 5);
+        //Move forward to A
+        moveForward(12, true, 5);
+        //Release wobble
+        releaseWabble();
+        /*}else if(totalRings == 1){
+            //Strafe right
+            mecanumDrive.strafeRight(10, true, 5);
+            //Move forward to A
+            mecanumDrive.moveForward(18, true, 5);
+            //Strafe left to B
+            mecanumDrive.strafeLeft(10, true, 5);
+            //Release wobble
+            mecanumDrive.releaseWabble();
+        }else if(totalRings == 4){
+            //Strafe right
+            mecanumDrive.strafeRight(12, true, 5);
+            //Move forward to A
+            mecanumDrive.moveForward(24, true, 5);
+            //Release wobble
+            mecanumDrive.releaseWabble();
+        }*/
+    }
+
+    public void grabWobble(){
+        grabber.setPosition(0);
+    }
+
+    public void releaseWobble(){
+        grabber.setPosition(1.0);
     }
 
 }
