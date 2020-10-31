@@ -218,9 +218,6 @@ class MecanumDrive {
 
     }
 
-    public void releaseWabble(){
-
-    }
 
     public void moveForward(double forward){ driveMecanum(forward, 0.0, 0.0); }
 
@@ -251,7 +248,7 @@ class MecanumDrive {
         //Move forward to A
         moveForward(12, true, 5);
         //Release wobble
-        releaseWabble();
+        releaseWobble();
         /*}else if(totalRings == 1){
             //Strafe right
             mecanumDrive.strafeRight(10, true, 5);

@@ -28,7 +28,7 @@ public class MecanumDriveOpMode extends OpMode {
         }
         boolean gamepadX = gamepad1.x;
         if(gamepadX){
-            mecanumDrive.releaseWabble();
+            mecanumDrive.releaseWobble();
         }
         //supply gamepad values to run motors, servo and other parts of robots
         mecanumDrive.driveMecanum(forward, strafe, rotate);
