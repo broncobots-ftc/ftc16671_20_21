@@ -17,6 +17,8 @@ class MecanumDrive {
 
     DcMotor shooterFront;
     DcMotor shooterBack;
+    DcMotor intake;
+    DcMotor conveyor;
 
     Servo grabber;
 
@@ -68,6 +70,11 @@ class MecanumDrive {
     void initShooterMotors(HardwareMap hwMap){
         shooterFront = hwMap.get(DcMotor.class, "shooter_front");
         shooterBack = hwMap.get(DcMotor.class, "shooter_back");
+    }
+
+    void initIntakeAndConveyor(HardwareMap hwMap){
+        intake = hwMap.get(DcMotor.class, "intake");
+        conveyor = hwMap.get(DcMotor.class, "conveyor");
     }
 
 
