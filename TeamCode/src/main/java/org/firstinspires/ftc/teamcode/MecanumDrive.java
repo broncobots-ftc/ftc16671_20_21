@@ -21,6 +21,9 @@ class MecanumDrive {
     DcMotor conveyor;
 
     Servo grabber;
+    Servo wobbleArm;
+    Servo lifter;
+    Servo pusher;
 
     public static double GEAR_RATIO = 1.0; // for simulator - ours should be 0.5f;
     public static double WHEEL_RADIUS = 5.0;  // 5 cm
@@ -65,7 +68,11 @@ class MecanumDrive {
     }
 
     void initServo(HardwareMap hwMap){
-        grabber = hwMap.get(Servo.class, "left_hand");
+        grabber = hwMap.get(Servo.class, "grabber");//0 - control hub
+        wobbleArm = hwMap.get(Servo.class, "wobble_arm");//4 - control hub
+        lifter = hwMap.get(Servo.class, "lifter");//5 - control hub
+        pusher = hwMap.get(Servo.class, "pusher");//3 - ext hub
+
     }
     void initShooterMotors(HardwareMap hwMap){
         shooterFront = hwMap.get(DcMotor.class, "shooter_front");
@@ -291,6 +298,29 @@ class MecanumDrive {
 
     public void releaseWobble(){
         grabber.setPosition(1.0);
+    }
+
+    public void runIntake(double intakePower){
+        intake.setPower(intakePower);
+    }
+
+    public void moveWobbleArmUp() {
+        wobbleArm.setPosition(0);
+    }
+    public void moveWobbleArmDown() {
+        wobbleArm.setPosition(1.0);
+    }
+    public void moveLifterUp() {
+        lifter.setPosition(0);
+    }
+    public void moveLifterDown() {
+        lifter.setPosition(1.0);
+    }
+    public void pushForward() {
+        pusher.setPosition(0);
+    }
+    public void pushbackward() {
+        pusher.setPosition(1.0);
     }
 
 }
