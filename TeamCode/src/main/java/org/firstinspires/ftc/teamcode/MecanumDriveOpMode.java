@@ -63,7 +63,20 @@ public class MecanumDriveOpMode extends OpMode {
         if(gamepad2B){
             mecanumDrive.pushForward();
             //sleep or wait for 2000 milliseconds
+            mecanumDrive.waitForSeconds(2);
             mecanumDrive.pushBackward();
+        }
+
+        if(gamepad2A){
+
+        }
+
+        if(gamepad2X){
+
+        }
+
+        if(gamepad2Y){
+
         }
 
 

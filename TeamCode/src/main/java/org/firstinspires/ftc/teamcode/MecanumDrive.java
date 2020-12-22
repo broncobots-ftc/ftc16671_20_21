@@ -45,6 +45,7 @@ class MecanumDrive {
 
 
     MecanumDrive() {
+
         float[] data = {1.0f, 1.0f, 1.0f,
                 1.0f, -1.0f, -1.0f,
                 1.0f, -1.0f, 1.0f};
@@ -320,10 +321,17 @@ class MecanumDrive {
         lifter.setPosition(1.0);
     }
     public void pushForward() {
-        pusher.setPosition(0);
+        pusher.setPosition(1.0);
     }
     public void pushBackward() {
-        pusher.setPosition(1.0);
+        pusher.setPosition(0.0);
+    }
+
+    public void waitForSeconds(int seconds){
+        runtime.reset();
+        if(runtime.seconds() <= 2){
+            //do nothing
+        }
     }
 
 }
