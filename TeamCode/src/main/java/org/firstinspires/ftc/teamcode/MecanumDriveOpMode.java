@@ -26,41 +26,47 @@ public class MecanumDriveOpMode extends OpMode {
         double strafe = gamepad1.left_stick_x * -1;
         double rotate = gamepad1.right_stick_x * -1;
         double gamepadrt = gamepad1.right_trigger;
-        boolean gamepadB = gamepad1.b;
-        boolean gamepadX = gamepad1.x;
+        double gamepadlt = gamepad1.left_trigger;
 
         boolean gamepadLeftBumper = gamepad1.left_bumper;
         boolean gamepadRightBumper = gamepad1.right_bumper;
 
+        boolean gamepad2X = gamepad2.x;
+        boolean gamepad2Y = gamepad2.y;
         boolean gamepad2A = gamepad2.a;
         boolean gamepad2B = gamepad2.b;
+        double gamepad2rt = gamepad2.right_trigger;
+        double gamepad2lt = gamepad2.left_trigger;
 
-        if(gamepadB){
-            mecanumDrive.grabWobble();
-        }
-
-        if(gamepadX){
-            mecanumDrive.releaseWobble();
-        }
-
-        if(gamepadLeftBumper){
-            mecanumDrive.moveWobbleArmDown();
-        }
-
-        if(gamepadRightBumper){
-            mecanumDrive.moveWobbleArmUp();
-        }
-        if(gamepad2A){
-            mecanumDrive.moveLifterDown();
-        }
-
-        if(gamepad2B){
-            mecanumDrive.moveLifterUp();
-        }
-
-
+        boolean gamepad2LeftBumper = gamepad2.left_bumper;
+        boolean gamepad2RightBumper = gamepad2.right_bumper;
 
         mecanumDrive.runIntake(-gamepadrt);
+        mecanumDrive.runConveyor(-gamepadrt);
+
+        if(gamepad2LeftBumper){
+            if(mecanumDrive.wobbleArm.getPosition() == 0.0)
+                mecanumDrive.moveWobbleArmDown();
+            else
+                mecanumDrive.moveWobbleArmUp();
+        }
+
+        if(gamepad2RightBumper){
+            if(mecanumDrive.grabber.getPosition() == 0.0)
+                mecanumDrive.grabWobble();
+            else
+                mecanumDrive.releaseWobble();
+        }
+
+
+
+        if(gamepad2B){
+            mecanumDrive.pushForward();
+            //sleep or wait for 2000 milliseconds
+            mecanumDrive.pushBackward();
+        }
+
+
         //supply gamepad values to run motors, servo and other parts of robots
         mecanumDrive.driveMecanum(forward, strafe, rotate);
         distances = mecanumDrive.getDistanceCm();

@@ -75,7 +75,7 @@ class MecanumDrive {
 
     }
     void initShooterMotors(HardwareMap hwMap){
-        shooterFront = hwMap.get(DcMotor.class, "shooter_front");
+        shooterFront = hwMap.get(DcMotor.class, "shooter_front");//
         shooterBack = hwMap.get(DcMotor.class, "shooter_back");
     }
 
@@ -243,7 +243,9 @@ class MecanumDrive {
     }
 
 
-    public void moveForward(double forward){ driveMecanum(forward, 0.0, 0.0); }
+    public void moveForward(double forward){
+        driveMecanum(forward, 0.0, 0.0);
+    }
 
     public void moveBackward(double backward){
         driveMecanum(-backward, 0.0, 0.0);
@@ -271,8 +273,7 @@ class MecanumDrive {
             strafeRight(12, true, 5);
             //Move forward to A
             moveForward(12, true, 5);
-            //Release wobble
-            releaseWobble();
+
         }else if(totalRings == 1){
             //Strafe right
             strafeRight(10, true, 5);
@@ -280,15 +281,13 @@ class MecanumDrive {
             moveForward(18, true, 5);
             //Strafe left to B
             strafeLeft(10, true, 5);
-            //Release wobble
-            releaseWobble();
+
         }else if(totalRings == 4){
             //Strafe right
             strafeRight(12, true, 5);
             //Move forward to A
             moveForward(24, true, 5);
-            //Release wobble
-            releaseWobble();
+
         }
     }
 
@@ -302,6 +301,10 @@ class MecanumDrive {
 
     public void runIntake(double intakePower){
         intake.setPower(intakePower);
+    }
+
+    public void runConveyor(double conveyorPower){
+        conveyor.setPower(conveyorPower);
     }
 
     public void moveWobbleArmUp() {
@@ -319,7 +322,7 @@ class MecanumDrive {
     public void pushForward() {
         pusher.setPosition(0);
     }
-    public void pushbackward() {
+    public void pushBackward() {
         pusher.setPosition(1.0);
     }
 

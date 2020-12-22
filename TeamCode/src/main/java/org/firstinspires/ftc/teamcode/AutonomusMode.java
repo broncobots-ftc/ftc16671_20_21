@@ -229,6 +229,10 @@ public class AutonomusMode extends LinearOpMode {
 
                     **/
                     mecanumDrive.moveBasedOnTotalRings(totalRings);
+                    //mecanumDrive.moveGrabberArmToRelease();
+                    sleep(3000);
+                    mecanumDrive.releaseWobble();
+                    sleep(2000);
                     break;
                 }
             }

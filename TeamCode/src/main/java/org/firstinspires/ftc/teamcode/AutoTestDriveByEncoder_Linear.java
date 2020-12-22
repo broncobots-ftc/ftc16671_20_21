@@ -65,6 +65,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @Autonomous(name="Auto Test Drive", group="ftc16671")
+@Disabled
 public class AutoTestDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
