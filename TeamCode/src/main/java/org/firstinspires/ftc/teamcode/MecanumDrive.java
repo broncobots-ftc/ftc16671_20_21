@@ -308,6 +308,14 @@ class MecanumDrive {
         conveyor.setPower(conveyorPower);
     }
 
+    public void runShooterFront(double shooterFrontPower){
+        shooterFront.setPower(shooterFrontPower);
+    }
+
+    public void runShooterBack(double shooterBackPower){
+        shooterBack.setPower(shooterBackPower);
+    }
+
     public void moveWobbleArmUp() {
         wobbleArm.setPosition(0);
     }
@@ -321,11 +329,24 @@ class MecanumDrive {
         lifter.setPosition(1.0);
     }
     public void pushForward() {
-        pusher.setPosition(1.0);
+        pusher.setDirection(Servo.Direction.FORWARD);
+        pusher.setPosition(0.9);
     }
     public void pushBackward() {
-        pusher.setPosition(0.0);
+        pusher.setDirection(Servo.Direction.FORWARD);
+        pusher.setPosition(0.5);
     }
+
+    public void liftUp() {
+        lifter.setDirection(Servo.Direction.FORWARD);
+        lifter.setPosition(0.5);
+    }
+    public void liftDown() {
+        lifter.setDirection(Servo.Direction.FORWARD);
+        lifter.setPosition(0.5);
+    }
+
+
 
     public void waitForSeconds(int seconds){
         runtime.reset();
