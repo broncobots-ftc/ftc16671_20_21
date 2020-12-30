@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * This OpMode scans a single servo back and forwards until Stop is pressed.
@@ -58,18 +59,19 @@ public class ConceptScanServo extends LinearOpMode {
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
     // Define class members
-    Servo   servo;
-    Servo   servo1;    double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    Servo   armServo;
+    Servo   gripServo;    double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
-
+    double  armPosition, gripPosition, contPower;
+    double  aLastTime, bLastTime, MIN_POSITION = 0, MAX_POSITION = 1;
 
     @Override
     public void runOpMode() {
 
         // Connect to servo (Assume PushBot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(Servo.class, "pusher");
-        servo1 = hardwareMap.get(Servo.class, "lifter");
+        armServo  = hardwareMap.get(Servo.class, "pusher");
+        gripServo  = hardwareMap.get(Servo.class, "lifter");
 
 
         // Wait for the start button
@@ -81,6 +83,47 @@ public class ConceptScanServo extends LinearOpMode {
         // Scan servo till stop pressed.
         while(opModeIsActive()){
 
+            if (gamepad1.a)
+                if (getRuntime() - aLastTime > .075)
+                {
+                    if (armPosition > MIN_POSITION) armPosition -= .05;
+                    aLastTime = getRuntime();
+                }
+
+            // move arm up on B button if not already at the highest position.
+            if (gamepad1.b)
+                if (getRuntime() - bLastTime > .075)
+                {
+                    if (armPosition < MAX_POSITION) armPosition += .05;
+                    bLastTime = getRuntime();
+                }
+
+            // open the gripper on X button if not already at most open position.
+            if (gamepad1.x && gripPosition < MAX_POSITION) gripPosition = gripPosition + .01;
+
+            // close the gripper on Y button if not already at the closed position.
+            if (gamepad1.y && gripPosition > MIN_POSITION) gripPosition = gripPosition - .01;
+
+            // Set continuous servo power level and direction.
+            if (gamepad1.dpad_left)
+                contPower = .20;
+            else if (gamepad1.dpad_right)
+                contPower = -.20;
+            else
+                contPower = 0.0;
+
+            // set the servo position values as we have computed them.
+            armServo.setPosition(Range.clip(armPosition, MIN_POSITION, MAX_POSITION));
+            gripServo.setPosition(Range.clip(gripPosition, MIN_POSITION, MAX_POSITION));
+            //contServo.setPower(contPower);
+
+            telemetry.addData("arm servo", String.format("position=%.2f  actual=%.2f", armPosition, armServo.getPosition()));
+
+            telemetry.addData("grip servo", "position=%.2f  actual=%.2f", gripPosition, gripServo.getPosition());
+
+            telemetry.update();
+            idle();
+            /*
             // slew the servo, according to the rampUp (direction) variable.
             if (rampUp) {
                 // Keep stepping up until we hit the max value.
@@ -109,6 +152,8 @@ public class ConceptScanServo extends LinearOpMode {
             servo1.setPosition(position);
             sleep(CYCLE_MS);
             idle();
+
+             */
         }
 
         // Signal done;

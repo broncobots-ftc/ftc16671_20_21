@@ -44,11 +44,6 @@ public class MecanumDriveOpMode extends OpMode {
         boolean gamepad2LeftBumper = gamepad2.left_bumper;
         boolean gamepad2RightBumper = gamepad2.right_bumper;
 
-        mecanumDrive.runIntake(-gamepadrt);//take it in
-        mecanumDrive.runConveyor(-gamepadrt);//take it in
-        mecanumDrive.runIntake(gamepadlt);//push it out
-        mecanumDrive.runConveyor(gamepadlt);//push it out
-
         if (gamepad1.right_trigger > 0){
             mecanumDrive.runIntake(-1.0);//take it in
             mecanumDrive.runConveyor(-1.0);//take it in
@@ -89,27 +84,29 @@ public class MecanumDriveOpMode extends OpMode {
             }
         }
         mecanumDrive.grabber.setPosition(Range.clip(grabberPosition, MIN_POSITION, MAX_POSITION));
-        telemetry.addData("grabber servo", "position=" + grabberPosition + "  actual="
+        telemetry.addData("wobber_arm servo", "position=" + grabberPosition + "  actual="
                 + mecanumDrive.grabber.getPosition());
 
 
         //Setting gamepad2B***************************
-        ElapsedTime time = new ElapsedTime();
-        if(time.seconds() > 4) {
-            if (gamepad2.b) {
-                if (pusherPosition > MIN_POSITION) {
-                    pusherPosition = MIN_POSITION;
-                }
+
+        if (gamepad2.b) {
+            if (pusherPosition > MIN_POSITION) {
+                pusherPosition = MIN_POSITION;
             }
-            mecanumDrive.pusher.setPosition(Range.clip(pusherPosition, MIN_POSITION, MAX_POSITION));
-            //wait
-            if(mecanumDrive.pusher.getPosition() == MIN_POSITION ){
-                pusherPosition =  MAX_POSITION;
-            }
-            mecanumDrive.pusher.setPosition(Range.clip(pusherPosition, MIN_POSITION, MAX_POSITION));
-            telemetry.addData("pusher servo", "position=" + pusherPosition + "  actual="
-                    + mecanumDrive.pusher.getPosition());
         }
+        mecanumDrive.pusher.setPosition(Range.clip(pusherPosition, MIN_POSITION, MAX_POSITION));
+        //wait
+        MecanumDrive.sleep(2000);
+        //
+        if(mecanumDrive.pusher.getPosition() == MIN_POSITION ){
+            pusherPosition =  MAX_POSITION;
+        }
+
+        mecanumDrive.pusher.setPosition(Range.clip(pusherPosition, MIN_POSITION, MAX_POSITION));
+        telemetry.addData("pusher servo", "position=" + pusherPosition + "  actual="
+                + mecanumDrive.pusher.getPosition());
+
 
 
 
@@ -141,6 +138,20 @@ public class MecanumDriveOpMode extends OpMode {
         telemetry.update();
 
 
+
+    }
+
+    /**
+     *
+     * @param miliseconds
+     */
+    private void justWait(int miliseconds){
+
+        double currTime = getRuntime();
+        double waitUntil = currTime + (double)(miliseconds/1000);
+        while (getRuntime() < waitUntil){
+            //do nothing
+        }
 
     }
 

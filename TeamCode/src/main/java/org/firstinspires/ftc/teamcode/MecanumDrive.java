@@ -328,14 +328,7 @@ class MecanumDrive {
     public void moveLifterDown() {
         lifter.setPosition(1.0);
     }
-    public void pushForward() {
-        pusher.setDirection(Servo.Direction.FORWARD);
-        pusher.setPosition(0.9);
-    }
-    public void pushBackward() {
-        pusher.setDirection(Servo.Direction.FORWARD);
-        pusher.setPosition(0.5);
-    }
+
 
     public void liftUp() {
         lifter.setDirection(Servo.Direction.FORWARD);
@@ -346,13 +339,25 @@ class MecanumDrive {
         lifter.setPosition(0.5);
     }
 
+    /**
+     * This method puts the current thread to sleep for the given time in msec.
+     * It handles InterruptException where it recalculates the remaining time
+     * and calls sleep again repeatedly until the specified sleep time has past.
+     *
+     * @param sleepTime specifies sleep time in msec.
+     */
+    public static void sleep(long sleepTime){
+        long wakeupTime = System.currentTimeMillis() + sleepTime;
 
+        while (sleepTime > 0){
+            try{
+                Thread.sleep(sleepTime);
+            }catch (InterruptedException e){
 
-    public void waitForSeconds(int seconds){
-        runtime.reset();
-        if(runtime.seconds() <= 2){
-            //do nothing
+            }
+            sleepTime = wakeupTime - System.currentTimeMillis();
         }
     }
+
 
 }
